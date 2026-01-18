@@ -190,7 +190,7 @@ export function AuthPage() {
           </div>
 
           <p className="text-sm text-gray-500 font-sans">
-            © 2024 BuildMate. All rights reserved.
+            © 2026 BuildMate. All rights reserved.
           </p>
         </div>
 
