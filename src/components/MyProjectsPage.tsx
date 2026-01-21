@@ -65,7 +65,7 @@ export function MyProjectsPage() {
   const [filter, setFilter] = useState<'all' | 'active' | 'draft' | 'archived' | 'completed'>('all');
   const { toast } = useToast();
   const { getCachedData, setCachedData } = useAuth();
-  const API_BASE = import.meta.env.VITE_API_URL;
+  const API_BASE = import.meta.env.VITE_API_URL || 'https://teammate-n05o.onrender.com';
   const cacheKey = 'my_projects';
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [projectToDelete, setProjectToDelete] = useState<string | null>(null);

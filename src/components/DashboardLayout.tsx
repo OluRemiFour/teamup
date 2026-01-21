@@ -41,12 +41,13 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   const [missingFields, setMissingFields] = useState<string[]>([]);
   const [unreadMessages, setUnreadMessages] = useState(0);
   const [unreadNotifications, setUnreadNotifications] = useState(0);
+  const API_BASE = import.meta.env.VITE_API_URL || 'https://teammate-n05o.onrender.com';
 
   useEffect(() => {
     const checkStatus = async () => {
       if (!user) return;
       try {
-        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/auth/profile/status`);
+        const res = await axios.get(`${API_BASE}/api/auth/profile/status`);
         setIsProfileIncomplete(!res.data.isComplete);
         setMissingFields(res.data.missingFields);
       } catch (err) {
@@ -61,7 +62,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
     const fetchUnreadCount = async () => {
       if (!user) return;
       try {
-        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/messages/conversations`);
+        const res = await axios.get(`${API_BASE}/api/messages/conversations`);
         if (res.data.success) {
           const count = res.data.conversations.reduce((acc: number, conv: any) => acc + (conv.unread || 0), 0);
           setUnreadMessages(count);
@@ -80,7 +81,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
     const fetchNotificationCount = async () => {
       if (!user) return;
       try {
-        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/notifications`);
+        const res = await axios.get(`${API_BASE}/api/notifications`);
         if (res.data.success) {
           const count = res.data.notifications.filter((n: any) => !n.isRead).length;
           setUnreadNotifications(count);

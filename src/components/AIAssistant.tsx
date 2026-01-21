@@ -105,7 +105,6 @@ export function AIAssistant() {
 
   return (
     <>
-      {/* Floating Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
         className={`
@@ -126,7 +125,6 @@ export function AIAssistant() {
         )}
       </button>
 
-      {/* Chat Panel */}
       {isOpen && (
         <div
           className="fixed bottom-24 right-6 w-96 h-[550px] glass-panel rounded-2xl shadow-2xl z-50 flex flex-col overflow-hidden border border-white/20 bg-black/60 backdrop-blur-xl"
@@ -134,7 +132,6 @@ export function AIAssistant() {
             animation: 'scale-in 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
           }}
         >
-          {/* Header */}
           <div className="p-4 border-b border-white/10 bg-white/5">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center shadow-inner">
@@ -150,7 +147,6 @@ export function AIAssistant() {
             </div>
           </div>
 
-          {/* Messages */}
           <div className="flex-1 overflow-y-auto p-4 space-y-6 scrollbar-thin scrollbar-thumb-white/10">
             {messages.map((message) => (
               <div
@@ -200,7 +196,6 @@ export function AIAssistant() {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Input */}
           <div className="p-4 bg-white/5 border-t border-white/10">
             <form
               onSubmit={(e) => {

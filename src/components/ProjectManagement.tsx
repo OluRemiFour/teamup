@@ -64,7 +64,7 @@ export function ProjectManagement({ projectId, isOwner, team, initialTasks, onTa
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [priorityFilter, setPriorityFilter] = useState<string>("all");
   const { toast } = useToast();
-  const API_BASE = import.meta.env.VITE_API_URL;
+  const API_BASE = import.meta.env.VITE_API_URL || 'https://teammate-n05o.onrender.com';
 
   const handleAddNote = async (taskId: string) => {
     if (!noteText.trim()) return;

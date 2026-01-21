@@ -46,7 +46,7 @@ export function ProjectOwnerDashboard() {
   const [error, setError] = useState<string | null>(null);
   const [statsData, setStatsData] = useState<any>(null);
   const { toast } = useToast();
-  const API_BASE = import.meta.env.VITE_API_URL;
+  const API_BASE = import.meta.env.VITE_API_URL || 'https://teammate-n05o.onrender.com';
 
   const stats = [
     {

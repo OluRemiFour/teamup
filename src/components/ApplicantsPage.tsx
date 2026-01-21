@@ -45,7 +45,7 @@ export function ApplicantsPage() {
   const { projectId } = useParams();
   const [applicants, setApplicants] = useState<Applicant[]>([]);
   const [loading, setLoading] = useState(true);
-  const API_BASE = import.meta.env.VITE_API_URL;
+  const API_BASE = import.meta.env.VITE_API_URL || 'https://teammate-n05o.onrender.com';
   const [filter, setFilter] = useState<'all' | 'pending' | 'accepted' | 'rejected'>('all');
   const [selectedApplicant, setSelectedApplicant] = useState<Applicant | null>(null);
   const { toast } = useToast();

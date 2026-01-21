@@ -64,7 +64,7 @@ export function CollaboratorDashboard() {
   const [applications, setApplications] = useState<Application[]>([]);
   const [statsData, setStatsData] = useState<any>(null); 
   const [loading, setLoading] = useState(true);
-  const API_BASE = import.meta.env.VITE_API_URL;
+  const API_BASE = import.meta.env.VITE_API_URL || 'https://teammate-n05o.onrender.com';
 
   useEffect(() => {
     const fetchData = async () => {

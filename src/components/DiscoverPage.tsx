@@ -31,7 +31,7 @@ export function DiscoverPage() {
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
   const { getCachedData, setCachedData } = useAuth();
-  const API_BASE = import.meta.env.VITE_API_URL;
+  const API_BASE = import.meta.env.VITE_API_URL || 'https://teammate-n05o.onrender.com';
   const [searchParams] = useSearchParams();
   const searchQuery = searchParams.get("query") || "";
 
