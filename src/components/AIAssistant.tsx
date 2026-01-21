@@ -4,6 +4,7 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
+import Cookies from 'js-cookie';
 import remarkGfm from 'remark-gfm';
 
 interface Message {
@@ -40,7 +41,7 @@ export function AIAssistant() {
   useEffect(() => {
     const fetchHistory = async () => {
       try {
-        const token = localStorage.getItem('token');
+        const token = Cookies.get('auth_token');
         if (!token) return;
 
         const response = await axios.get(`${API_BASE}/api/chat/history`, {
@@ -73,7 +74,7 @@ export function AIAssistant() {
     setIsTyping(true);
 
     try {
-      const token = localStorage.getItem('token');
+      const token = Cookies.get('auth_token');
       const response = await axios.post(`${API_BASE}/api/chat/send`, {
         message: inputValue,
         previousMessages: messages.slice(-10), 
