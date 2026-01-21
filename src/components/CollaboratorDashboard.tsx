@@ -31,6 +31,9 @@ interface Application {
       name: string;
       avatar: string;
     };
+    status?: string;
+    lifecycleStage?: string;
+    isDeleted?: boolean;
   };
   status: "pending" | "accepted" | "rejected";
   role: string;
@@ -287,9 +290,19 @@ export function CollaboratorDashboard() {
                        }`}>
                           {app.status}
                        </span>
-                    </div>
-                  </div>
-                  <div className="text-right">
+                       {(app.project?.status === "completed" || app.project?.status === "archived") && (
+                           <span className="text-[10px] font-mono px-2 py-0.5 rounded-full border bg-emerald-500/10 text-emerald-400 border-emerald-500/20">
+                             Completed
+                           </span>
+                       )}
+                        {app.project?.isDeleted && (
+                            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full border bg-gray-500/10 text-gray-400 border-gray-500/20">
+                              Removed
+                            </span>
+                        )}
+                     </div>
+                   </div>
+                   <div className="text-right">
                     <p className="text-[10px] text-gray-500 font-mono">
                       {new Date(app.appliedAt).toLocaleDateString()}
                     </p>

@@ -17,6 +17,7 @@ interface Notification {
   isRead: boolean;
   createdAt: string;
   project?: {
+    _id: string;
     projectTitle: string;
   };
 }
@@ -24,11 +25,34 @@ interface Notification {
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { formatDistanceToNow } from "date-fns";
+import { useNavigate } from "react-router-dom";
 
 export function NotificationsPopover() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(true);
   const API_BASE = import.meta.env.VITE_API_URL || 'https://teammate-n05o.onrender.com';
+  const navigate = useNavigate();
+
+  const handleNotificationClick = async (notification: Notification) => {
+      // Mark as read immediately
+      if (!notification.isRead) {
+          markAsRead(notification._id);
+      }
+
+      // Navigate based on type
+      if (notification.type === 'message') {
+           navigate('/dashboard/messages');
+      } else if (notification.project?._id || (notification as any).project) {
+           // Handle populated project object or ID string
+           const projectId = notification.project?._id || (notification as any).project;
+           if (projectId) {
+               navigate(`/dashboard/project/${projectId}?tab=overview`);
+           }
+      }
+      
+      // Close popover logic would go here if we had access to the open state, 
+      // but strictly speaking navigation usually closes it or we can rely on default behavior.
+  };
 
   const fetchNotifications = async () => {
     try {
@@ -100,7 +124,7 @@ export function NotificationsPopover() {
             notifications.map((notification) => (
               <div
                 key={notification._id}
-                onClick={() => !notification.isRead && markAsRead(notification._id)}
+                onClick={() => handleNotificationClick(notification)}
                 className={`p-4 border-b border-white/5 hover:bg-white/5 transition-colors cursor-pointer ${
                   !notification.isRead ? "bg-cyan-500/[0.03]" : ""
                 }`}
