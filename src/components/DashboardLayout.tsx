@@ -23,6 +23,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { NotificationsPopover } from "@/components/NotificationsPopover";
 import { useSearchParams } from "react-router-dom";
 import axios from "axios";
+import { AIAssistant } from "./AIAssistant";
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -327,6 +328,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           missingFields={missingFields}
         />
       )}
+      <AIAssistant />
     </div>
   );
 }

@@ -62,7 +62,7 @@ export function CollaboratorDashboard() {
 
   const [matches, setMatches] = useState<Match[]>([]);
   const [applications, setApplications] = useState<Application[]>([]);
-  const [statsData, setStatsData] = useState<any>(null); // State for stats
+  const [statsData, setStatsData] = useState<any>(null); 
   const [loading, setLoading] = useState(true);
   const API_BASE = import.meta.env.VITE_API_URL;
 
@@ -303,7 +303,7 @@ export function CollaboratorDashboard() {
                   <Link to={`/dashboard/project/${app.project?._id}`} className="flex-1">
                     <Button variant="outline" size="sm" className="w-full h-8 text-[10px] border-white/10 text-gray-400 hover:text-white hover:border-cyan-500/30">
                       <ExternalLink className="w-3 h-3 mr-1" />
-                      {/* View Project */}
+                      View Project
                     </Button>
                   </Link>
                   {app.status === 'accepted' ? (

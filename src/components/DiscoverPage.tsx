@@ -3,7 +3,6 @@ import { useSearchParams } from "react-router-dom";
 import { DashboardLayout } from "./DashboardLayout";
 import { ProjectCard } from "./ProjectCard";
 import { FilterSidebar, FilterState } from "./FilterSidebar";
-import { AIAssistant } from "./AIAssistant";
 import { useToast } from "@/components/ui/use-toast";
 import axios from "axios";
 import { Project, Role, ExperienceLevel, Timeline } from "@/types/project";
@@ -314,8 +313,6 @@ export function DiscoverPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
-      {/* <AIAssistant /> */}
     </DashboardLayout>
   );
 }
