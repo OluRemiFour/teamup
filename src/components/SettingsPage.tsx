@@ -52,7 +52,8 @@ export function SettingsPage() {
   const { toast } = useToast();
   const [isSaving, setIsSaving] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
-  const API_BASE = import.meta.env.VITE_API_URL || 'https://teammate-n05o.onrender.com';
+  const API_BASE =
+    import.meta.env.VITE_API_URL || "https://build-gether-backend.onrender.com";
 
   // New state for avatar
   const [avatar, setAvatar] = useState(user?.avatar || "");
@@ -68,14 +69,14 @@ export function SettingsPage() {
   const collaborator =
     user?.userType === "collaborator" ? (user as Collaborator) : null;
   const [selectedRoles, setSelectedRoles] = useState<Role[]>(
-    collaborator?.roles || []
+    collaborator?.roles || [],
   );
   const [availability, setAvailability] = useState(
-    collaborator?.availability || "flexible"
+    collaborator?.availability || "flexible",
   );
-  
+
   const [selectedSkills, setSelectedSkills] = useState<TechStack[]>(
-    collaborator?.skills || []
+    collaborator?.skills || [],
   );
   const [customSkill, setCustomSkill] = useState("");
 
@@ -91,18 +92,18 @@ export function SettingsPage() {
       setBio(user.bio || "");
       setLocation(user.location || "");
       setAvatar(user.avatar || "");
-      
+
       // Use any for keys that might be mapped differently or missing
       const u = user as any;
       setGithub(u.github || u.githubUrl || "");
       setLinkedin(u.linkedin || u.linkedinUrl || "");
       setPortfolio(u.portfolio || u.portfolioUrl || u.websiteUrl || "");
-      
+
       if (user.userType === "collaborator") {
         const collab = user as Collaborator;
         // Normalize roles if they come as objects from legacy data
-        const normalizedRoles = (collab.roles || []).map((r: any) => 
-          typeof r === 'object' && r !== null && r.type ? r.type : r
+        const normalizedRoles = (collab.roles || []).map((r: any) =>
+          typeof r === "object" && r !== null && r.type ? r.type : r,
         );
         setSelectedRoles(normalizedRoles);
         setAvailability(collab.availability || "flexible");
@@ -116,15 +117,19 @@ export function SettingsPage() {
 
   const toggleRole = (role: Role) => {
     setSelectedRoles((prev) =>
-      prev.includes(role) ? prev.filter((r) => r !== role) : [...prev, role]
+      prev.includes(role) ? prev.filter((r) => r !== role) : [...prev, role],
     );
   };
 
   const toggleSkill = (skill: TechStack) => {
     setSelectedSkills((prev) => {
-      const exists = prev.find((s) => s.name.toLowerCase() === skill.name.toLowerCase());
+      const exists = prev.find(
+        (s) => s.name.toLowerCase() === skill.name.toLowerCase(),
+      );
       if (exists) {
-        return prev.filter((s) => s.name.toLowerCase() !== skill.name.toLowerCase());
+        return prev.filter(
+          (s) => s.name.toLowerCase() !== skill.name.toLowerCase(),
+        );
       }
       return [...prev, skill];
     });
@@ -153,16 +158,23 @@ export function SettingsPage() {
       try {
         // Optimistic update for preview (using FileReader if we wanted instant, but let's wait for server)
         const res = await axios.post(`${API_BASE}/api/upload`, formData, {
-            headers: { "Content-Type": "multipart/form-data" }
+          headers: { "Content-Type": "multipart/form-data" },
         });
-        
+
         if (res.status === 200) {
-            setAvatar(res.data.imageUrl);
-            toast({ title: "Image uploaded", description: "Don't forget to save changes!" });
+          setAvatar(res.data.imageUrl);
+          toast({
+            title: "Image uploaded",
+            description: "Don't forget to save changes!",
+          });
         }
       } catch (error) {
         console.error("Upload failed", error);
-        toast({ title: "Upload failed", description: "Could not upload image", variant: "destructive" });
+        toast({
+          title: "Upload failed",
+          description: "Could not upload image",
+          variant: "destructive",
+        });
       } finally {
         setIsUploading(false);
       }
@@ -182,16 +194,20 @@ export function SettingsPage() {
         github,
         linkedin,
         portfolio,
-        ...(collaborator && { roles: selectedRoles, availability, skills: selectedSkills }),
+        ...(collaborator && {
+          roles: selectedRoles,
+          availability,
+          skills: selectedSkills,
+        }),
         ...(projectOwner && { company }),
       });
 
-        toast({
+      toast({
         title: "Settings Saved! ✨",
         description: "Your profile has been updated successfully.",
-        });
+      });
     } catch (e) {
-        // Toast handled in auth context, but good to have safeguard
+      // Toast handled in auth context, but good to have safeguard
     }
     setIsSaving(false);
   };
@@ -219,20 +235,30 @@ export function SettingsPage() {
           <div className="flex items-center gap-6 mb-6">
             <div className="relative group">
               <Avatar className="w-24 h-24">
-                <AvatarImage src={avatar || user?.avatar} alt={user?.fullName} />
+                <AvatarImage
+                  src={avatar || user?.avatar}
+                  alt={user?.fullName}
+                />
                 <AvatarFallback className="text-2xl">
                   {user?.fullName?.[0]}
                 </AvatarFallback>
               </Avatar>
-              <label htmlFor="avatar-upload" className="absolute bottom-0 right-0 p-2 rounded-full bg-cyan-500 text-white hover:bg-cyan-400 transition-colors cursor-pointer">
-                {isUploading ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Camera className="w-4 h-4" />}
-                <input 
-                    id="avatar-upload" 
-                    type="file" 
-                    accept="image/*" 
-                    className="hidden" 
-                    onChange={handleImageUpload}
-                    disabled={isUploading}
+              <label
+                htmlFor="avatar-upload"
+                className="absolute bottom-0 right-0 p-2 rounded-full bg-cyan-500 text-white hover:bg-cyan-400 transition-colors cursor-pointer"
+              >
+                {isUploading ? (
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                ) : (
+                  <Camera className="w-4 h-4" />
+                )}
+                <input
+                  id="avatar-upload"
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleImageUpload}
+                  disabled={isUploading}
                 />
               </label>
             </div>
@@ -361,16 +387,23 @@ export function SettingsPage() {
                   </div>
                 ))}
               </div>
-              
+
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 mb-6">
-                {POPULAR_STACKS.filter(s => !selectedSkills.find(sel => sel.name.toLowerCase() === s.name.toLowerCase())).map((skill) => (
+                {POPULAR_STACKS.filter(
+                  (s) =>
+                    !selectedSkills.find(
+                      (sel) => sel.name.toLowerCase() === s.name.toLowerCase(),
+                    ),
+                ).map((skill) => (
                   <button
                     key={skill.name}
                     onClick={() => toggleSkill(skill)}
                     className="flex items-center gap-2 p-2 rounded-lg border border-white/10 bg-white/5 hover:bg-white/10 transition-colors text-left group"
                   >
                     <span className="text-lg">{skill.icon}</span>
-                    <span className="text-sm text-gray-400 group-hover:text-white font-sans">{skill.name}</span>
+                    <span className="text-sm text-gray-400 group-hover:text-white font-sans">
+                      {skill.name}
+                    </span>
                     <Plus className="w-3 h-3 ml-auto text-gray-500 group-hover:text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity" />
                   </button>
                 ))}
@@ -384,7 +417,7 @@ export function SettingsPage() {
                     placeholder="Add custom skill (e.g. Web3, Solidity...)"
                     className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 font-sans pr-10"
                     onKeyDown={(e) => {
-                      if (e.key === 'Enter') {
+                      if (e.key === "Enter") {
                         e.preventDefault();
                         addCustomSkill();
                       }
@@ -394,8 +427,8 @@ export function SettingsPage() {
                     ENTER
                   </div>
                 </div>
-                <Button 
-                  type="button" 
+                <Button
+                  type="button"
                   onClick={() => addCustomSkill()}
                   variant="outline"
                   className="border-white/10 hover:bg-white/5 text-gray-400"

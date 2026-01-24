@@ -82,7 +82,7 @@ export function CreateProjectPage() {
 
   const toggleRole = (role: Role) => {
     setSelectedRoles((prev) =>
-      prev.includes(role) ? prev.filter((r) => r !== role) : [...prev, role]
+      prev.includes(role) ? prev.filter((r) => r !== role) : [...prev, role],
     );
   };
 
@@ -121,7 +121,8 @@ export function CreateProjectPage() {
   const removeTech = (tech: string) => {
     setTechStack((prev) => prev.filter((t) => t !== tech));
   };
-  const API_BASE = import.meta.env.VITE_API_URL || 'https://teammate-n05o.onrender.com';
+  const API_BASE =
+    import.meta.env.VITE_API_URL || "https://build-gether-backend.onrender.com";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -178,7 +179,7 @@ export function CreateProjectPage() {
             timeline,
             teamSize,
           },
-        }
+        },
       );
 
       if (request.status !== 201) {

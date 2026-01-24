@@ -1,16 +1,16 @@
-import { useState, useRef, useEffect } from 'react';
-import { Sparkles, X, Send } from 'lucide-react';
-import { Button } from './ui/button';
-import { Input } from './ui/input';
-import axios from 'axios';
-import ReactMarkdown from 'react-markdown';
-import Cookies from 'js-cookie';
-import remarkGfm from 'remark-gfm';
+import { useState, useRef, useEffect } from "react";
+import { Sparkles, X, Send } from "lucide-react";
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
+import axios from "axios";
+import ReactMarkdown from "react-markdown";
+import Cookies from "js-cookie";
+import remarkGfm from "remark-gfm";
 
 interface Message {
   id: string;
   text: string;
-  sender: 'user' | 'ai';
+  sender: "user" | "ai";
   timestamp: Date;
 }
 
@@ -18,20 +18,21 @@ export function AIAssistant() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
-      id: 'initial',
+      id: "initial",
       text: "Hi! I'm your Build Gather AI. I can help you find projects, explain features, or tell you about our community. How can I help today?",
-      sender: 'ai',
+      sender: "ai",
       timestamp: new Date(),
     },
   ]);
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const API_BASE = import.meta.env.VITE_API_URL || 'https://teammate-n05o.onrender.com';
+  const API_BASE =
+    import.meta.env.VITE_API_URL || "https://build-gether-backend.onrender.com";
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   useEffect(() => {
@@ -41,13 +42,13 @@ export function AIAssistant() {
   useEffect(() => {
     const fetchHistory = async () => {
       try {
-        const token = Cookies.get('auth_token');
+        const token = Cookies.get("auth_token");
         if (!token) return;
 
         const response = await axios.get(`${API_BASE}/api/chat/history`, {
-          headers: { Authorization: `Bearer ${token}` }
+          headers: { Authorization: `Bearer ${token}` },
         });
-        
+
         if (response.data && response.data.length > 0) {
           setMessages(response.data);
         }
@@ -65,40 +66,44 @@ export function AIAssistant() {
     const userMessage: Message = {
       id: Date.now().toString(),
       text: inputValue,
-      sender: 'user',
+      sender: "user",
       timestamp: new Date(),
     };
 
-    setMessages(prev => [...prev, userMessage]);
-    setInputValue('');
+    setMessages((prev) => [...prev, userMessage]);
+    setInputValue("");
     setIsTyping(true);
 
     try {
-      const token = Cookies.get('auth_token');
-      const response = await axios.post(`${API_BASE}/api/chat/send`, {
-        message: inputValue,
-        previousMessages: messages.slice(-10), 
-      }, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const token = Cookies.get("auth_token");
+      const response = await axios.post(
+        `${API_BASE}/api/chat/send`,
+        {
+          message: inputValue,
+          previousMessages: messages.slice(-10),
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
 
       const aiResponse: Message = {
         id: (Date.now() + 1).toString(),
         text: response.data.reply,
-        sender: 'ai',
+        sender: "ai",
         timestamp: new Date(),
       };
 
-      setMessages(prev => [...prev, aiResponse]);
+      setMessages((prev) => [...prev, aiResponse]);
     } catch (error) {
       console.error("Chat API Error:", error);
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         text: "I'm sorry, I'm having trouble connecting right now. Please try again later.",
-        sender: 'ai',
+        sender: "ai",
         timestamp: new Date(),
       };
-      setMessages(prev => [...prev, errorMessage]);
+      setMessages((prev) => [...prev, errorMessage]);
     } finally {
       setIsTyping(false);
     }
@@ -116,7 +121,7 @@ export function AIAssistant() {
           transition-all duration-300
           hover:scale-110 active:scale-95
           z-50
-          ${isOpen ? 'rotate-0' : 'animate-pulse-glow'}
+          ${isOpen ? "rotate-0" : "animate-pulse-glow"}
         `}
       >
         {isOpen ? (
@@ -130,7 +135,7 @@ export function AIAssistant() {
         <div
           className="fixed bottom-24 right-6 w-96 h-[550px] glass-panel rounded-2xl shadow-2xl z-50 flex flex-col overflow-hidden border border-white/20 bg-black/60 backdrop-blur-xl"
           style={{
-            animation: 'scale-in 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+            animation: "scale-in 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
           }}
         >
           <div className="p-4 border-b border-white/10 bg-white/5">
@@ -139,10 +144,14 @@ export function AIAssistant() {
                 <Sparkles className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h3 className="font-display font-bold text-white text-sm tracking-tight">Build Gather AI</h3>
+                <h3 className="font-display font-bold text-white text-sm tracking-tight">
+                  Build Gather AI
+                </h3>
                 <div className="flex items-center gap-1.5">
                   <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                  <p className="text-[10px] text-gray-400 font-mono uppercase tracking-widest uppercase">System Online</p>
+                  <p className="text-[10px] text-gray-400 font-mono uppercase tracking-widest uppercase">
+                    System Online
+                  </p>
                 </div>
               </div>
             </div>
@@ -152,36 +161,56 @@ export function AIAssistant() {
             {messages.map((message) => (
               <div
                 key={message.id}
-                className={`flex flex-col ${message.sender === 'user' ? 'items-end' : 'items-start'}`}
+                className={`flex flex-col ${message.sender === "user" ? "items-end" : "items-start"}`}
               >
                 <div
                   className={`
                     max-w-[85%] rounded-2xl px-4 py-2.5 text-sm font-sans leading-relaxed
-                    ${message.sender === 'user'
-                      ? 'bg-gradient-to-r from-cyan-600 to-purple-600 text-white shadow-lg shadow-purple-500/10 rounded-tr-none'
-                      : 'bg-white/10 text-gray-200 border border-white/10 backdrop-blur-sm rounded-tl-none'
+                    ${
+                      message.sender === "user"
+                        ? "bg-gradient-to-r from-cyan-600 to-purple-600 text-white shadow-lg shadow-purple-500/10 rounded-tr-none"
+                        : "bg-white/10 text-gray-200 border border-white/10 backdrop-blur-sm rounded-tl-none"
                     }
                   `}
                 >
-                  <ReactMarkdown 
+                  <ReactMarkdown
                     remarkPlugins={[remarkGfm]}
                     components={{
-                      p: ({node, ...props}) => <p className="mb-2 last:mb-0" {...props} />,
-                      a: ({node, ...props}) => <a className="text-cyan-400 hover:underline" {...props} />,
-                      code: ({node, ...props}) => <code className="bg-black/40 rounded px-1.5 py-0.5 font-mono text-xs" {...props} />,
-                      ul: ({node, ...props}) => <ul className="list-disc pl-4 mb-2" {...props} />,
-                      ol: ({node, ...props}) => <ol className="list-decimal pl-4 mb-2" {...props} />,
+                      p: ({ node, ...props }) => (
+                        <p className="mb-2 last:mb-0" {...props} />
+                      ),
+                      a: ({ node, ...props }) => (
+                        <a
+                          className="text-cyan-400 hover:underline"
+                          {...props}
+                        />
+                      ),
+                      code: ({ node, ...props }) => (
+                        <code
+                          className="bg-black/40 rounded px-1.5 py-0.5 font-mono text-xs"
+                          {...props}
+                        />
+                      ),
+                      ul: ({ node, ...props }) => (
+                        <ul className="list-disc pl-4 mb-2" {...props} />
+                      ),
+                      ol: ({ node, ...props }) => (
+                        <ol className="list-decimal pl-4 mb-2" {...props} />
+                      ),
                     }}
                   >
                     {message.text}
                   </ReactMarkdown>
                 </div>
                 <span className="text-[10px] text-gray-500 mt-1 px-1 font-mono uppercase tracking-tighter">
-                  {new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  {new Date(message.timestamp).toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
                 </span>
               </div>
             ))}
-            
+
             {isTyping && (
               <div className="flex justify-start">
                 <div className="bg-white/5 border border-white/10 rounded-2xl rounded-tl-none px-5 py-3 shadow-inner">
@@ -193,7 +222,7 @@ export function AIAssistant() {
                 </div>
               </div>
             )}
-            
+
             <div ref={messagesEndRef} />
           </div>
 

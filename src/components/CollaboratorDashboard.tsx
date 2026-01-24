@@ -9,7 +9,7 @@ import {
   CheckCircle2,
   AlertCircle,
   ExternalLink,
-  MessageSquare
+  MessageSquare,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { DashboardLayout } from "./DashboardLayout";
@@ -65,44 +65,53 @@ export function CollaboratorDashboard() {
 
   const [matches, setMatches] = useState<Match[]>([]);
   const [applications, setApplications] = useState<Application[]>([]);
-  const [statsData, setStatsData] = useState<any>(null); 
+  const [statsData, setStatsData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const API_BASE = import.meta.env.VITE_API_URL || 'https://teammate-n05o.onrender.com';
+  const API_BASE =
+    import.meta.env.VITE_API_URL || "https://build-gether-backend.onrender.com";
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
         const [matchesRes, appsRes] = await Promise.all([
-            axios.get(`${API_BASE}/api/collaborators/matches`),
-            axios.get(`${API_BASE}/api/collaborators/applications`)
+          axios.get(`${API_BASE}/api/collaborators/matches`),
+          axios.get(`${API_BASE}/api/collaborators/applications`),
         ]);
 
         if (matchesRes.data.success) {
-            setMatches(matchesRes.data.matches);
+          setMatches(matchesRes.data.matches);
         }
         if (appsRes.data.success) {
-            setApplications(appsRes.data.applications);
+          setApplications(appsRes.data.applications);
         }
         let stats: any = {};
         try {
-            const statsRes = await axios.get(`${API_BASE}/api/collaborators/stats`);
-            if (statsRes.data.success) {
-                stats = statsRes.data.stats;
-            }
+          const statsRes = await axios.get(
+            `${API_BASE}/api/collaborators/stats`,
+          );
+          if (statsRes.data.success) {
+            stats = statsRes.data.stats;
+          }
         } catch (e) {
-            console.log("Stats endpoint optional or failed");
+          console.log("Stats endpoint optional or failed");
         }
 
         // Dynamic score fallback from applications
-        if (!stats.matchScore && appsRes.data.success && appsRes.data.applications.length > 0) {
-             const apps = appsRes.data.applications;
-             const totalScore = apps.reduce((acc: number, app: any) => acc + (app.matchScore || 0), 0);
-             // @ts-ignore
-             stats.matchScore = Math.round(totalScore / apps.length);
+        if (
+          !stats.matchScore &&
+          appsRes.data.success &&
+          appsRes.data.applications.length > 0
+        ) {
+          const apps = appsRes.data.applications;
+          const totalScore = apps.reduce(
+            (acc: number, app: any) => acc + (app.matchScore || 0),
+            0,
+          );
+          // @ts-ignore
+          stats.matchScore = Math.round(totalScore / apps.length);
         }
         setStatsData(stats);
-
       } catch (error) {
         console.error("Failed to fetch dashboard data", error);
       } finally {
@@ -111,7 +120,7 @@ export function CollaboratorDashboard() {
     };
 
     if (user) {
-        fetchData();
+      fetchData();
     }
   }, [user, API_BASE]);
 
@@ -151,11 +160,16 @@ export function CollaboratorDashboard() {
       {/* Welcome Section */}
       <div className="mb-8">
         <h1 className="text-3xl font-display font-bold text-white mb-2">
-          Welcome back, {(collaborator as any)?.name?.split(" ")[0] || (collaborator as any)?.fullName?.split(" ")[0]}! 👋
+          Welcome back,{" "}
+          {(collaborator as any)?.name?.split(" ")[0] ||
+            (collaborator as any)?.fullName?.split(" ")[0]}
+          ! 👋
         </h1>
         <p className="text-gray-400 font-sans">
           You have{" "}
-          <span className="text-cyan-400 font-semibold">{matches.length} new match{matches.length !== 1 ? 'es' : ''}</span>{" "}
+          <span className="text-cyan-400 font-semibold">
+            {matches.length} new match{matches.length !== 1 ? "es" : ""}
+          </span>{" "}
           waiting for you.
         </p>
       </div>
@@ -220,7 +234,7 @@ export function CollaboratorDashboard() {
                     {match.projectTitle}
                   </h3>
                   <div className="flex items-center gap-2 mb-2 flex-wrap">
-                    {match.rolesNeeded.slice(0,3).map((role) => (
+                    {match.rolesNeeded.slice(0, 3).map((role) => (
                       <RoleBadge key={role} role={role as any} />
                     ))}
                   </div>
@@ -231,12 +245,12 @@ export function CollaboratorDashboard() {
                   </div>
                 </div>
                 <Link to={`/dashboard/project/${match._id}`}>
-                <Button
-                  size="sm"
-                  className="bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-400 hover:to-purple-400 font-sans opacity-0 group-hover:opacity-100 transition-opacity"
-                >
-                  View
-                </Button>
+                  <Button
+                    size="sm"
+                    className="bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-400 hover:to-purple-400 font-sans opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    View
+                  </Button>
                 </Link>
               </div>
             ))}
@@ -282,27 +296,32 @@ export function CollaboratorDashboard() {
                       {app.project?.title || "Project Title"}
                     </h3>
                     <div className="flex items-center gap-2 mb-2">
-                       <RoleBadge role={app.role as any} />
-                       <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full border ${
-                          app.status === "accepted" ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" :
-                          app.status === "rejected" ? "bg-red-500/10 text-red-400 border-red-500/20" :
-                          "bg-amber-500/10 text-amber-400 border-amber-500/20"
-                       }`}>
-                          {app.status}
-                       </span>
-                       {(app.project?.status === "completed" || app.project?.status === "archived") && (
-                           <span className="text-[10px] font-mono px-2 py-0.5 rounded-full border bg-emerald-500/10 text-emerald-400 border-emerald-500/20">
-                             Completed
-                           </span>
-                       )}
-                        {app.project?.isDeleted && (
-                            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full border bg-gray-500/10 text-gray-400 border-gray-500/20">
-                              Removed
-                            </span>
-                        )}
-                     </div>
-                   </div>
-                   <div className="text-right">
+                      <RoleBadge role={app.role as any} />
+                      <span
+                        className={`text-[10px] font-mono px-2 py-0.5 rounded-full border ${
+                          app.status === "accepted"
+                            ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                            : app.status === "rejected"
+                              ? "bg-red-500/10 text-red-400 border-red-500/20"
+                              : "bg-amber-500/10 text-amber-400 border-amber-500/20"
+                        }`}
+                      >
+                        {app.status}
+                      </span>
+                      {(app.project?.status === "completed" ||
+                        app.project?.status === "archived") && (
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full border bg-emerald-500/10 text-emerald-400 border-emerald-500/20">
+                          Completed
+                        </span>
+                      )}
+                      {app.project?.isDeleted && (
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full border bg-gray-500/10 text-gray-400 border-gray-500/20">
+                          Removed
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  <div className="text-right">
                     <p className="text-[10px] text-gray-500 font-mono">
                       {new Date(app.appliedAt).toLocaleDateString()}
                     </p>
@@ -313,26 +332,47 @@ export function CollaboratorDashboard() {
                 </div>
 
                 <div className="lg:flex gap-2 mt-4 pt-3 border-t border-white/5">
-                  <Link to={`/dashboard/project/${app.project?._id}`} className="flex-1">
-                    <Button variant="outline" size="sm" className="w-full h-8 text-[10px] border-white/10 text-gray-400 hover:text-white hover:border-cyan-500/30">
+                  <Link
+                    to={`/dashboard/project/${app.project?._id}`}
+                    className="flex-1"
+                  >
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full h-8 text-[10px] border-white/10 text-gray-400 hover:text-white hover:border-cyan-500/30"
+                    >
                       <ExternalLink className="w-3 h-3 mr-1" />
                       View Project
                     </Button>
                   </Link>
-                  {app.status === 'accepted' ? (
-                     <Link to={`/dashboard/messages?project=${app.project?._id}`} className="flex-1">
-                        <Button variant="outline" size="sm" className="w-full h-8 text-[10px] border-white/10 text-cyan-400 hover:bg-cyan-500/5">
-                          <MessageSquare className="w-3 h-3 mr-1" />
-                          Message Team
-                        </Button>
-                     </Link>
+                  {app.status === "accepted" ? (
+                    <Link
+                      to={`/dashboard/messages?project=${app.project?._id}`}
+                      className="flex-1"
+                    >
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="w-full h-8 text-[10px] border-white/10 text-cyan-400 hover:bg-cyan-500/5"
+                      >
+                        <MessageSquare className="w-3 h-3 mr-1" />
+                        Message Team
+                      </Button>
+                    </Link>
                   ) : (
-                    <Link to={`/dashboard/messages?recipient=${app.project?.owner?.name}`} className="flex-1">
-                        <Button variant="outline" size="sm" className="w-full h-8 text-[10px] border-white/10 text-gray-400">
-                          <MessageSquare className="w-3 h-3 mr-1" />
-                          Message Owner
-                        </Button>
-                     </Link>
+                    <Link
+                      to={`/dashboard/messages?recipient=${app.project?.owner?.name}`}
+                      className="flex-1"
+                    >
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="w-full h-8 text-[10px] border-white/10 text-gray-400"
+                      >
+                        <MessageSquare className="w-3 h-3 mr-1" />
+                        Message Owner
+                      </Button>
+                    </Link>
                   )}
                 </div>
               </div>

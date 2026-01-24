@@ -37,7 +37,6 @@ interface Project {
   views?: number;
 }
 
-
 export function ProjectOwnerDashboard() {
   const { user } = useAuth();
   const owner = user as ProjectOwner;
@@ -46,7 +45,8 @@ export function ProjectOwnerDashboard() {
   const [error, setError] = useState<string | null>(null);
   const [statsData, setStatsData] = useState<any>(null);
   const { toast } = useToast();
-  const API_BASE = import.meta.env.VITE_API_URL || 'https://teammate-n05o.onrender.com';
+  const API_BASE =
+    import.meta.env.VITE_API_URL || "https://build-gether-backend.onrender.com";
 
   const stats = [
     {
@@ -91,7 +91,7 @@ export function ProjectOwnerDashboard() {
 
     try {
       const response = await axios.get(
-        `${API_BASE}/api/project/total-projects`
+        `${API_BASE}/api/project/total-projects`,
       );
 
       if (response.status !== 200) {
@@ -107,10 +107,10 @@ export function ProjectOwnerDashboard() {
 
       // Fetch Stats
       const statsRes = await axios.get(`${API_BASE}/api/project/owner-stats`);
-      if(statsRes.data.success) {
-          setStatsData(statsRes.data.stats);
+      if (statsRes.data.success) {
+        setStatsData(statsRes.data.stats);
       }
-      
+
       hasFetched.current = true;
     } catch (err: any) {
       console.error("❌ Fetch failed:", err);
@@ -191,11 +191,11 @@ export function ProjectOwnerDashboard() {
                     className="flex items-center justify-between p-4 rounded-lg bg-white/5 border border-white/10 hover:border-white/20 transition-colors"
                   >
                     <div className="flex-1">
-                  <h3 className="font-sans font-medium text-white mb-1 group-hover:text-cyan-400 transition-colors">
-                    <Link to={`/dashboard/project/${project._id}`}>
-                        {project.projectTitle}
-                    </Link>
-                  </h3>
+                      <h3 className="font-sans font-medium text-white mb-1 group-hover:text-cyan-400 transition-colors">
+                        <Link to={`/dashboard/project/${project._id}`}>
+                          {project.projectTitle}
+                        </Link>
+                      </h3>
                       <div className="flex items-center gap-4 text-xs text-gray-400 font-mono">
                         <span className="flex items-center gap-1">
                           <Users className="w-3 h-3" />
@@ -290,7 +290,8 @@ export function ProjectOwnerDashboard() {
                                   </span>
                                 </div>
                                 <p className="text-xs text-gray-400 font-sans">
-                                  {applicant.roleAppliedFor || "Developer / Designer"}
+                                  {applicant.roleAppliedFor ||
+                                    "Developer / Designer"}
                                 </p>
                               </div>
                             </div>

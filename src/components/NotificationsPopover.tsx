@@ -1,4 +1,12 @@
-import { Bell, Check, Info, AlertTriangle, MessageSquare, ClipboardList, RefreshCw } from "lucide-react";
+import {
+  Bell,
+  Check,
+  Info,
+  AlertTriangle,
+  MessageSquare,
+  ClipboardList,
+  RefreshCw,
+} from "lucide-react";
 import {
   Popover,
   PopoverContent,
@@ -30,28 +38,30 @@ import { useNavigate } from "react-router-dom";
 export function NotificationsPopover() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(true);
-  const API_BASE = import.meta.env.VITE_API_URL || 'https://teammate-n05o.onrender.com';
+  const API_BASE =
+    import.meta.env.VITE_API_URL || "https://build-gether-backend.onrender.com";
   const navigate = useNavigate();
 
   const handleNotificationClick = async (notification: Notification) => {
-      // Mark as read immediately
-      if (!notification.isRead) {
-          markAsRead(notification._id);
-      }
+    // Mark as read immediately
+    if (!notification.isRead) {
+      markAsRead(notification._id);
+    }
 
-      // Navigate based on type
-      if (notification.type === 'message') {
-           navigate('/dashboard/messages');
-      } else if (notification.project?._id || (notification as any).project) {
-           // Handle populated project object or ID string
-           const projectId = notification.project?._id || (notification as any).project;
-           if (projectId) {
-               navigate(`/dashboard/project/${projectId}?tab=overview`);
-           }
+    // Navigate based on type
+    if (notification.type === "message") {
+      navigate("/dashboard/messages");
+    } else if (notification.project?._id || (notification as any).project) {
+      // Handle populated project object or ID string
+      const projectId =
+        notification.project?._id || (notification as any).project;
+      if (projectId) {
+        navigate(`/dashboard/project/${projectId}?tab=overview`);
       }
-      
-      // Close popover logic would go here if we had access to the open state, 
-      // but strictly speaking navigation usually closes it or we can rely on default behavior.
+    }
+
+    // Close popover logic would go here if we had access to the open state,
+    // but strictly speaking navigation usually closes it or we can rely on default behavior.
   };
 
   const fetchNotifications = async () => {
@@ -78,7 +88,7 @@ export function NotificationsPopover() {
       const res = await axios.patch(`${API_BASE}/api/notifications/${id}/read`);
       if (res.data.success) {
         setNotifications((prev) =>
-          prev.map((n) => (n._id === id ? { ...n, isRead: true } : n))
+          prev.map((n) => (n._id === id ? { ...n, isRead: true } : n)),
         );
       }
     } catch (error) {
@@ -90,7 +100,9 @@ export function NotificationsPopover() {
     const unreadIds = notifications.filter((n) => !n.isRead).map((n) => n._id);
     try {
       await Promise.all(
-        unreadIds.map((id) => axios.patch(`${API_BASE}/api/notifications/${id}/read`))
+        unreadIds.map((id) =>
+          axios.patch(`${API_BASE}/api/notifications/${id}/read`),
+        ),
       );
       setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
     } catch (error) {
@@ -103,14 +115,21 @@ export function NotificationsPopover() {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="ghost" size="icon" className="relative text-gray-400 hover:text-white">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="relative text-gray-400 hover:text-white"
+        >
           <Bell className="w-5 h-5" />
           {unreadCount > 0 && (
             <span className="absolute top-2 right-2 w-2 h-2 bg-cyan-500 rounded-full animate-pulse" />
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent align="end" className="w-80 bg-[#1a1f2e] border-white/10 p-0 shadow-2xl">
+      <PopoverContent
+        align="end"
+        className="w-80 bg-[#1a1f2e] border-white/10 p-0 shadow-2xl"
+      >
         <div className="p-4 border-b border-white/10 flex justify-between items-center">
           <h4 className="font-display font-bold text-white">Notifications</h4>
           {unreadCount > 0 && (
@@ -130,31 +149,54 @@ export function NotificationsPopover() {
                 }`}
               >
                 <div className="flex gap-3">
-                  <div className={`mt-1 p-1.5 rounded-full flex-shrink-0 h-fit ${
-                      notification.type === 'acceptance' ? 'bg-emerald-500/20 text-emerald-400' :
-                      notification.type === 'invite' ? 'bg-amber-500/20 text-amber-400' :
-                      notification.type === 'task_assigned' ? 'bg-purple-500/20 text-purple-400' :
-                      notification.type === 'task_updated' ? 'bg-blue-500/20 text-blue-400' :
-                      'bg-cyan-500/20 text-cyan-400'
-                  }`}>
-                      {notification.type === 'acceptance' && <Check className="w-3 h-3" />}
-                      {notification.type === 'invite' && <AlertTriangle className="w-3 h-3" />}
-                      {notification.type === 'message' && <MessageSquare className="w-3 h-3" />}
-                      {notification.type === 'task_assigned' && <ClipboardList className="w-3 h-3" />}
-                      {notification.type === 'task_updated' && <RefreshCw className="w-3 h-3" />}
+                  <div
+                    className={`mt-1 p-1.5 rounded-full flex-shrink-0 h-fit ${
+                      notification.type === "acceptance"
+                        ? "bg-emerald-500/20 text-emerald-400"
+                        : notification.type === "invite"
+                          ? "bg-amber-500/20 text-amber-400"
+                          : notification.type === "task_assigned"
+                            ? "bg-purple-500/20 text-purple-400"
+                            : notification.type === "task_updated"
+                              ? "bg-blue-500/20 text-blue-400"
+                              : "bg-cyan-500/20 text-cyan-400"
+                    }`}
+                  >
+                    {notification.type === "acceptance" && (
+                      <Check className="w-3 h-3" />
+                    )}
+                    {notification.type === "invite" && (
+                      <AlertTriangle className="w-3 h-3" />
+                    )}
+                    {notification.type === "message" && (
+                      <MessageSquare className="w-3 h-3" />
+                    )}
+                    {notification.type === "task_assigned" && (
+                      <ClipboardList className="w-3 h-3" />
+                    )}
+                    {notification.type === "task_updated" && (
+                      <RefreshCw className="w-3 h-3" />
+                    )}
                   </div>
                   <div>
                     <h5 className="text-sm font-medium text-white mb-0.5">
-                      {notification.type === 'acceptance' ? 'Application Accepted' : 
-                       notification.type === 'invite' ? 'Project Invite' : 
-                       notification.type === 'task_assigned' ? 'Task Assigned' :
-                       notification.type === 'task_updated' ? 'Task Updated' : 'New Message'}
+                      {notification.type === "acceptance"
+                        ? "Application Accepted"
+                        : notification.type === "invite"
+                          ? "Project Invite"
+                          : notification.type === "task_assigned"
+                            ? "Task Assigned"
+                            : notification.type === "task_updated"
+                              ? "Task Updated"
+                              : "New Message"}
                     </h5>
                     <p className="text-xs text-gray-400 mb-1.5 leading-relaxed">
                       {notification.text}
                     </p>
                     <span className="text-[10px] text-gray-500 font-mono">
-                      {formatDistanceToNow(new Date(notification.createdAt), { addSuffix: true })}
+                      {formatDistanceToNow(new Date(notification.createdAt), {
+                        addSuffix: true,
+                      })}
                     </span>
                   </div>
                 </div>
@@ -168,7 +210,7 @@ export function NotificationsPopover() {
         </div>
         {unreadCount > 0 && (
           <div className="p-3 border-t border-white/10 text-center">
-            <button 
+            <button
               onClick={markAllAsRead}
               className="text-xs text-cyan-400 hover:text-cyan-300 font-sans transition-colors"
             >

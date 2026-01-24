@@ -20,7 +20,7 @@ interface AuthContextType {
     password: string,
     confirmPassword: string,
     name: string,
-    userType: UserType
+    userType: UserType,
   ) => Promise<void>;
   logout: () => void;
   updateUser: (updates: Partial<User>) => Promise<void>;
@@ -31,7 +31,7 @@ interface AuthContextType {
     password: string,
     confirmPassword: string,
     name: string,
-    userType: UserType
+    userType: UserType,
   ) => Promise<void>;
   cache: Record<string, any>;
   setCachedData: (key: string, data: any) => void;
@@ -39,7 +39,8 @@ interface AuthContextType {
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
-const API_BASE = import.meta.env.VITE_API_URL || 'https://teammate-n05o.onrender.com';
+const API_BASE =
+  import.meta.env.VITE_API_URL || "https://build-gether-backend.onrender.com";
 
 // Mock users for demo
 const mockProjectOwner: ProjectOwner = {
@@ -298,7 +299,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     password: string,
     confirmPassword: string,
     name: string,
-    userType: UserType
+    userType: UserType,
   ) => {
     setError(null);
     setIsLoading(true);
@@ -350,17 +351,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setIsLoading(true);
         // Call API to update profile
         const res = await axios.put(`${API_BASE}/api/auth/profile`, updates);
-        
+
         // Merge updates with current user state (or use response data if it returns full user)
-        const updatedUser = { ...user, ...updates }; 
+        const updatedUser = { ...user, ...updates };
         if (res.data.user) {
-            // If backend returns updated user, use it
-            Object.assign(updatedUser, res.data.user);
-            if (updatedUser.role && !updatedUser.userType) {
-                updatedUser.userType = updatedUser.role as any;
-            }
+          // If backend returns updated user, use it
+          Object.assign(updatedUser, res.data.user);
+          if (updatedUser.role && !updatedUser.userType) {
+            updatedUser.userType = updatedUser.role as any;
+          }
         }
-        
+
         setUser(updatedUser);
 
         // Update user in cookie as well
@@ -368,7 +369,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
         // Keep localStorage for backward compatibility
         localStorage.setItem("buildmate_user", JSON.stringify(updatedUser));
-        
+
         toast({
           title: "Profile Updated",
           description: "Your changes have been saved successfully.",
@@ -427,7 +428,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     email: string,
     password: string,
     name: string,
-    userType: UserType
+    userType: UserType,
   ) => {
     setIsLoading(true);
     await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -461,7 +462,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const setCachedData = (key: string, data: any) => {
-    setCache(prev => ({ ...prev, [key]: data }));
+    setCache((prev) => ({ ...prev, [key]: data }));
   };
 
   const getCachedData = (key: string) => {

@@ -19,6 +19,8 @@ import { OpenSourceDetailPage } from "@/components/OpenSourceDetailPage";
 import { ApplicationReviewPage } from "@/components/ApplicationReviewPage";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 
+// App
+
 function App() {
   return (
     <AuthProvider>
@@ -40,22 +42,45 @@ function App() {
             <Route path="/dashboard/messages" element={<MessagesPage />} />
             <Route path="/dashboard/settings" element={<SettingsPage />} />
             <Route path="/dashboard/open-source" element={<OpenSourcePage />} />
-            <Route path="/dashboard/open-source/:repoName" element={<OpenSourceDetailPage />} />
-            
+            <Route
+              path="/dashboard/open-source/:repoName"
+              element={<OpenSourceDetailPage />}
+            />
+
             {/* Project Owner Only */}
-            <Route element={<ProtectedRoute allowedRoles={['project_owner']} />}>
-                <Route path="/dashboard/projects" element={<MyProjectsPage />} />
-                <Route path="/dashboard/projects/new" element={<CreateProjectPage />} />
-                <Route path="/dashboard/projects/edit/:projectId" element={<EditProjectPage />} />
-                <Route path="/dashboard/applicants" element={<ApplicantsPage />} />
-                <Route path="/dashboard/projects/:projectId/applicants" element={<ApplicantsPage />} />
-                <Route path="/dashboard/applicants/:applicationId" element={<ApplicationReviewPage />} />
+            <Route
+              element={<ProtectedRoute allowedRoles={["project_owner"]} />}
+            >
+              <Route path="/dashboard/projects" element={<MyProjectsPage />} />
+              <Route
+                path="/dashboard/projects/new"
+                element={<CreateProjectPage />}
+              />
+              <Route
+                path="/dashboard/projects/edit/:projectId"
+                element={<EditProjectPage />}
+              />
+              <Route
+                path="/dashboard/applicants"
+                element={<ApplicantsPage />}
+              />
+              <Route
+                path="/dashboard/projects/:projectId/applicants"
+                element={<ApplicantsPage />}
+              />
+              <Route
+                path="/dashboard/applicants/:applicationId"
+                element={<ApplicationReviewPage />}
+              />
             </Route>
 
             {/* Collaborator Only */}
-            <Route element={<ProtectedRoute allowedRoles={['collaborator']} />}>
-                <Route path="/dashboard/discover" element={<DiscoverPage />} />
-                <Route path="/dashboard/applications" element={<ApplicationsPage />} />
+            <Route element={<ProtectedRoute allowedRoles={["collaborator"]} />}>
+              <Route path="/dashboard/discover" element={<DiscoverPage />} />
+              <Route
+                path="/dashboard/applications"
+                element={<ApplicationsPage />}
+              />
             </Route>
 
             {/* Application Details - potentially accessible by both but context differs */}
@@ -64,7 +89,7 @@ function App() {
               path="/dashboard/project/:projectId"
               element={<ProjectDetailPage />}
             />
-            
+
             <Route path="*" element={<Navigate to="/dashboard" replace />} />
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />

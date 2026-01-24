@@ -35,13 +35,16 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchParams] = useSearchParams();
-  const [searchQuery, setSearchQuery] = useState(searchParams.get("query") || "");
+  const [searchQuery, setSearchQuery] = useState(
+    searchParams.get("query") || "",
+  );
   const [showCompletionModal, setShowCompletionModal] = useState(true);
   const [isProfileIncomplete, setIsProfileIncomplete] = useState(false);
   const [missingFields, setMissingFields] = useState<string[]>([]);
   const [unreadMessages, setUnreadMessages] = useState(0);
   const [unreadNotifications, setUnreadNotifications] = useState(0);
-  const API_BASE = import.meta.env.VITE_API_URL || 'https://teammate-n05o.onrender.com';
+  const API_BASE =
+    import.meta.env.VITE_API_URL || "https://build-gether-backend.onrender.com";
 
   useEffect(() => {
     const checkStatus = async () => {
@@ -64,7 +67,10 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       try {
         const res = await axios.get(`${API_BASE}/api/messages/conversations`);
         if (res.data.success) {
-          const count = res.data.conversations.reduce((acc: number, conv: any) => acc + (conv.unread || 0), 0);
+          const count = res.data.conversations.reduce(
+            (acc: number, conv: any) => acc + (conv.unread || 0),
+            0,
+          );
           setUnreadMessages(count);
         }
       } catch (error) {
@@ -83,7 +89,9 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       try {
         const res = await axios.get(`${API_BASE}/api/notifications`);
         if (res.data.success) {
-          const count = res.data.notifications.filter((n: any) => !n.isRead).length;
+          const count = res.data.notifications.filter(
+            (n: any) => !n.isRead,
+          ).length;
           setUnreadNotifications(count);
         }
       } catch (error) {
@@ -96,11 +104,10 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
     return () => clearInterval(interval);
   }, [user]);
 
-
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    if(searchQuery.trim()) {
-        navigate(`/dashboard/discover?query=${encodeURIComponent(searchQuery)}`);
+    if (searchQuery.trim()) {
+      navigate(`/dashboard/discover?query=${encodeURIComponent(searchQuery)}`);
     }
   };
 
@@ -198,7 +205,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                 >
                   <item.icon className="w-5 h-5 flex-shrink-0" />
                   <span className="font-medium">{item.label}</span>
-                  {item.label === 'Messages' && unreadMessages > 0 && (
+                  {item.label === "Messages" && unreadMessages > 0 && (
                     <span className="ml-auto bg-cyan-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[1.25rem] text-center">
                       {unreadMessages}
                     </span>
@@ -297,38 +304,48 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 
           {/* Page Content */}
           <main className="flex-1 p-6 relative z-10 overflow-y-auto">
-            {isProfileIncomplete && location.pathname !== "/dashboard/settings" && (
-              <div className="mb-6 bg-orange-500/10 border border-orange-500/20 rounded-xl p-4 flex items-center justify-between animate-in slide-in-from-top duration-500">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-orange-500/20 flex items-center justify-center">
-                    <AlertCircle className="w-4 h-4 text-orange-400" />
+            {isProfileIncomplete &&
+              location.pathname !== "/dashboard/settings" && (
+                <div className="mb-6 bg-orange-500/10 border border-orange-500/20 rounded-xl p-4 flex items-center justify-between animate-in slide-in-from-top duration-500">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-orange-500/20 flex items-center justify-center">
+                      <AlertCircle className="w-4 h-4 text-orange-400" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-orange-200">
+                        Profile Incomplete
+                      </p>
+                      <p className="text-xs text-orange-400/70">
+                        Missing: {missingFields.join(", ") || "Loading..."}
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-sm font-medium text-orange-200">Profile Incomplete</p>
-                    <p className="text-xs text-orange-400/70">
-                      Missing: {missingFields.join(", ") || "Loading..."}
-                    </p>
-                  </div>
+                  <Link to="/dashboard/settings">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="border-orange-500/30 text-orange-400 hover:bg-orange-500/10"
+                    >
+                      Complete Now
+                    </Button>
+                  </Link>
                 </div>
-                <Link to="/dashboard/settings">
-                  <Button size="sm" variant="outline" className="border-orange-500/30 text-orange-400 hover:bg-orange-500/10">
-                    Complete Now
-                  </Button>
-                </Link>
-              </div>
-            )}
+              )}
             {children}
           </main>
         </div>
       </div>
-      
-      {user && isProfileIncomplete && showCompletionModal && location.pathname !== "/dashboard/settings" && (
-        <ProfileCompletionModal 
-          user={user} 
-          onClose={() => setShowCompletionModal(false)} 
-          missingFields={missingFields}
-        />
-      )}
+
+      {user &&
+        isProfileIncomplete &&
+        showCompletionModal &&
+        location.pathname !== "/dashboard/settings" && (
+          <ProfileCompletionModal
+            user={user}
+            onClose={() => setShowCompletionModal(false)}
+            missingFields={missingFields}
+          />
+        )}
       <AIAssistant />
     </div>
   );
