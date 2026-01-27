@@ -544,7 +544,7 @@ export function LandingPage() {
               BuildMate
             </div>
             <p className="text-sm text-gray-500 font-sans">
-              © 2024 BuildMate. All rights reserved.
+              © 2026 BuildMate. All rights reserved.
             </p>
             <div className="flex gap-6">
               <a
