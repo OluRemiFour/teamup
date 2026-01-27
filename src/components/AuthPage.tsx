@@ -36,13 +36,7 @@ export function AuthPage() {
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
-  const [pendingSignupData, setPendingSignupData] = useState<{
-    email: string;
-    password: string;
-    confirmPassword: string;
-    name: string;
-    userType: UserType;
-  } | null>(null);
+
 
   const [showOtpModal, setShowOtpModal] = useState(false);
   const [otpError, setOtpError] = useState<string | null>(null);
@@ -123,14 +117,20 @@ export function AuthPage() {
     }
   };
   const handleResendOtp = async () => {
-    if (!pendingSignupData) return;
+    if (!signupEmail) {
+      setOtpError('Email not found. Please try signing up again.');
+      return;
+    }
     setOtpError(null);
-    await requestOtp(pendingSignupData.email);
+    try {
+      await requestOtp(signupEmail);
+    } catch (err) {
+      setOtpError('Failed to resend OTP. Please try again.');
+    }
   };
 
   const handleCloseOtp = () => {
     setShowOtpModal(false);
-    setPendingSignupData(null); // ← Clean up
     setOtpError(null);
   };
 
@@ -475,7 +475,7 @@ export function AuthPage() {
         isOpen={showOtpModal}
         onClose={handleCloseOtp}
         onVerify={handleVerifyOtp}
-        email={pendingSignupData?.email || email || ""}
+        email={signupEmail || email || ""}
         isLoading={isLoading}
         error={otpError}
         onResend={handleResendOtp}
